@@ -4,45 +4,42 @@
 #define PLAYERS 5
 
 int main(void) {
-    int player_scores[3][4] = {0};
-    float player_averages[4] = {0};
-    float highest_average = 0;
+    int scores_per_game[GAMES][PLAYERS] = {0};
+    double averages[PLAYERS] = {0};
+    double max_average = 0;
     int best_player = -1;
 
-    /* get player scores for each game */
-    for (int game = 0; game < GAMES; game++) {
-        printf("Game #%d\n", game+1);
-        for (int player = 0; player < PLAYERS; player++) {
-            printf("Enter score for player #%d: ", player+1);
-            scanf("%d", &player_scores[game][player]);
+    for (int i = 0; i < GAMES; i++) {
+        printf("Game #%d\n", i+1);
+        for (int j = 0; j < PLAYERS; j++) {
+            printf("Enter score for player #%d: ", j+1);
+            scanf("%d", &scores_per_game[i][j]);
+            averages[j] += scores_per_game[i][j];
+        }
+    }
+    /*
+     * For debugging
+    for (int i = 0; i < GAMES; i++) {
+        printf("Game #%d\n", i+1);
+        for (int j = 0; j < PLAYERS; j++) {
+            printf("Score for player #%d is %d \n", j+1, scores_per_game[i][j]);
+        }
+    }
+    */
+    for (int i = 0; i < PLAYERS; i++) {
+        averages[i] /= GAMES;
+        //printf("Average for #%d is %lf\n", i+1, averages[i]);
+    }
+
+    max_average = averages[0];
+
+    for (int i = 1; i < PLAYERS; i++) {
+        if (averages[i] > max_average) {
+            max_average = averages[i];
+            best_player = i+1;
         }
     }
 
-    /* sum all scores for each player */
-    for (int player = 0; player < PLAYERS; player++) {
-        for (int game = 0; game < GAMES; game++) {
-            player_averages[player] += player_scores[game][player];
-        }
-        printf("Player #%d has total score of: %f\n", player+1, player_averages[player]);
-    }
-
-    /* calculate the average for all players */
-    for (int player = 0; player < PLAYERS; player++) {
-        player_averages[player] /= GAMES;
-        // printf("Average for player #%d is %f\n", player, player_averages[player]);
-    }
-
-    highest_average = player_averages[0];
-
-    /* pick best player and display him */
-    for (int player = 1; player < PLAYERS; player++) {
-        if (highest_average < player_averages[player]) {
-            highest_average = player_averages[player];
-            best_player = player;
-        }
-    }
-
-    printf("Player #%d has the best average score of: %f\n", best_player, highest_average);
-
+    printf("Best player is player #%d with highest scoring average of %.2lf\n", best_player, max_average);
     return 0;
 }
